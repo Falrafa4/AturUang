@@ -5,3 +5,7 @@
     --color-secondary: #F3F4F6;
     --font-default: "Alexandria", sans-serif;
 }
+
+.card {
+    @apply flex flex-col justify-center items-center shadow-lg;
+}
