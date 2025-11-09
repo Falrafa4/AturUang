@@ -3,7 +3,7 @@
 @theme {
     --color-primary: #1E3A8A;
     --color-secondary: #F3F4F6;
-    --font-default: "Alexandria", sans-serif;
+    --font-default: "Alexandria", "Arial", sans-serif;
 }
 
 * {
@@ -27,7 +27,7 @@ p {
 }
 
 .btn-primary {
-    @apply bg-primary text-white px-15 py-4 flex items-center content-center border border-primary rounded-full w-fit mt-6 hover:bg-secondary hover:text-primary hover:border hover:border-primary transition-all duration-300 ease-in-out !important;
+    @apply bg-primary text-white px-15 py-4 flex items-center content-center border border-primary rounded-full w-fit mt-6 hover:bg-secondary hover:text-primary hover:border hover:border-primary transition-all duration-300 ease-in-out;
 }
 
 .btn-primary-alternate {
