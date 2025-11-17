@@ -63,8 +63,11 @@
                                 20! (input berupa Rupiah)</h4>
                             <div class="relative font-normal">
                                 <h1 class="absolute left-5 top-1/2 -translate-y-1/10">Rp</h1>
-                                <input type="number" min="1" step="any" id="inputPembagian"
+                                <!-- <input type="number" min="1" step="any" id="inputPembagian"
+                                class="border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none"> -->
+                                <input type="text" min="1" step="any" id="inputPembagian"
                                 class="border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                <input type="hidden" id="realInputPembagian">
                             </div>
                             <button id="submitHitung" class="btn-primary-hp mt-5 text-sm lg:text-base w-full lg:w-fit lg:btn-primary font-normal">Hitung Pembagian</button>
                         </div>
@@ -99,8 +102,9 @@
                                 <h1 class="font-bold-custom">Total Anggaran Bulanan</h1>
                                 <div class="relative font-normal">
                                     <h1 class="absolute left-5 top-1/2 -translate-y-1/10">Rp</h1>
-                                    <input type="number" min="1" step="any" id="inputTotalAnggaranBulanan"
-                                        class="border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                    <input type="text" min="1" step="any" id="inputTotalAnggaranBulanan"
+                                        class="input-perbandingan border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                    <input type="hidden" id="realInputTotalAnggaranBulanan">
                                 </div>
                             </div>
                             <div class="flex flex-col gap-[15px]">
@@ -109,24 +113,27 @@
                                     <h1 class="font-normal">Kebutuhan Pokok</h1>
                                     <div class="relative font-normal">
                                         <h1 class="absolute left-5 top-1/2 -translate-y-1/10">Rp</h1>
-                                        <input type="number" min="1" step="any" id="inputKebutuhanPokok"
-                                            class="border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                        <input type="text" min="1" step="any" id="inputKebutuhanPokok"
+                                            class="input-perbandingan border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                        <input type="hidden" id="realInputKebutuhanPokok">
                                     </div>
                                 </div>
                                 <div class="flex flex-col">
                                     <h1 class="font-normal">Keinginan</h1>
                                     <div class="relative font-normal">
                                         <h1 class="absolute left-5 top-1/2 -translate-y-1/10">Rp</h1>
-                                        <input type="number" min="1" step="any" id="inputKeinginan"
-                                            class="border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                        <input type="text" min="1" step="any" id="inputKeinginan"
+                                            class="input-perbandingan border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                        <input type="hidden" id="realInputKeinginan">
                                     </div>
                                 </div>
                                 <div class="flex flex-col">
                                     <h1 class="font-normal">Tabungan atau Investasi</h1>
                                     <div class="relative font-normal">
                                         <h1 class="absolute left-5 top-1/2 -translate-y-1/10">Rp</h1>
-                                        <input type="number" min="1" step="any" id="inputTabunganAtauInvestasi"
-                                            class="border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                        <input type="text" min="1" step="any" id="inputTabunganAtauInvestasi"
+                                            class="input-perbandingan border-primary border border-solid items-center py-3 pr-10 pl-11 rounded-[100px] mt-5 w-full outline-none">
+                                        <input type="hidden" id="realInputTabunganAtauInvestasi">
                                     </div>
                                 </div>
                             </div>
@@ -150,10 +157,65 @@
     </main>
     <!-- main section end -->
 
-
     <script>
+        // format input rupiah dengan jquery
+        $(document).ready(function() {
+            let $priceInput = $('#inputPembagian');
+            let $hiddenPrice = $('#realInputPembagian');
+
+            function formatRupiah(angka) {
+                let reverse = angka.toString().split('').reverse().join('');
+                let ribuan = reverse.match(/\d{1,3}/g);
+                let formatted = ribuan.join('.').split('').reverse().join('');
+                return formatted;
+            }
+
+            function cleanNumber(angka) {
+                return angka.replace(/\./g, '');
+            }
+
+            $('.input-perbandingan').each(function() {
+                let $priceInput = $(this);
+                let $hiddenPrice = $(this).next('input[type="hidden"]');
+
+                $priceInput.on('keyup', function() {
+                    var rawValue = $(this).val();
+                    var cleanedValue = cleanNumber(rawValue);
+
+                    // Pastikan input adalah angka (atau string kosong)
+                    if (cleanedValue === '') {
+                        $hiddenPrice.val(''); 
+                        $(this).val('');
+                        return;
+                    }
+
+                    var formattedValue = formatRupiah(cleanedValue);
+                    $(this).val(formattedValue);
+                    $hiddenPrice.val(cleanedValue);
+                });
+            });
+
+            // Event listener saat pengguna mengetik di priceInput
+            $priceInput.on('keyup', function() {
+                var rawValue = $(this).val();
+                var cleanedValue = cleanNumber(rawValue);
+
+                // Pastikan input adalah angka (atau string kosong)
+                if (cleanedValue === '') {
+                    $hiddenPrice.val(''); 
+                    $(this).val('');
+                    return;
+                }
+
+                var formattedValue = formatRupiah(cleanedValue);
+                $(this).val(formattedValue);
+                $hiddenPrice.val(cleanedValue);
+            });
+        });
+
         function perhitunganPembagianKeuangan() {
-            let input = $('#inputPembagian').val();
+            let input = $('#realInputPembagian').val();
+            
             if (input == 0 || isNaN(input)) {
                 alert('Harap diisi terlebih dahulu dan jangan ada karakter yang selain angka');
                 return;
@@ -245,9 +307,9 @@
             const existingChart = Chart.getChart("chartOutput");
             if (existingChart) existingChart.destroy();
             // Sebagai data asli input
-            const dataKebutuhanPokok = $('#inputKebutuhanPokok').val();
-            const dataKeinginan = $('#inputKeinginan').val();
-            const dataTabunganAtauInvestasi = $('#inputTabunganAtauInvestasi').val();
+            const dataKebutuhanPokok = $('#realInputKebutuhanPokok').val();
+            const dataKeinginan = $('#realInputKeinginan').val();
+            const dataTabunganAtauInvestasi = $('#realInputTabunganAtauInvestasi').val();
 
             if ((dataKebutuhanPokok == 0 || isNaN(dataKebutuhanPokok)) && (dataKeinginan == 0 || isNaN(dataKeinginan)) && (dataTabunganAtauInvestasi == 0 || isNaN(dataTabunganAtauInvestasi))) {
                 alert('Harap diisi terlebih dahulu dan jangan ada karakter yang selain angka');
@@ -258,7 +320,7 @@
             const dataInput = [dataKebutuhanPokok, dataKeinginan, dataTabunganAtauInvestasi];
             
             // sebagai data asli dari sistem
-            const total = $('#inputTotalAnggaranBulanan').val();
+            const total = $('#realInputTotalAnggaranBulanan').val();
             const dataFromSystemKebutuhanPokok = total * 50 / 100;
             const dataFromSystemKeinginan = total * 30 / 100;
             const dataFromSystemTabunganAtauInvestasi = total * 20 / 100;
